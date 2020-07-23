@@ -1,0 +1,31 @@
+<ng-template #loading>
+  <mat-progress-bar mode="indeterminate"
+                    color="accent"></mat-progress-bar>
+</ng-template>
+<ng-container *ngIf="socket.connected$ | async as connected else loading">
+  <ng-container *ngIf="notifyCount !== null else loading">
+    <section class="mat-typography mat-app-background app-container"
+             [ngClass]="themer.isLight ? 'app-light' : 'app-dark'">
+      <mat-toolbar color="primary">
+        <span fxFlex>Platform Demo</span>
+        <a mat-icon-button
+           matTooltip="Notifications"
+           routerLink="notifications"
+           routerLinkActive="active">
+          <mat-icon *ngIf="notifyCount > 0"
+                    [matBadge]="notifyCount"
+                    matBadgePosition="after"
+                    matBadgeColor="warn">notifications_active</mat-icon>
+          <mat-icon *ngIf="!(notifyCount > 0)">notifications</mat-icon>
+        </a>
+        <button mat-icon-button
+                (click)="themer.toggleTheme()">
+          <mat-icon [color]="themer.isLight ? 'accent' : 'default'">
+            {{themer.isLight ? 'brightness_5' : 'brightness_3'}}
+          </mat-icon>
+        </button>
+      </mat-toolbar>
+      <router-outlet></router-outlet>
+    </section>
+  </ng-container>
+</ng-container>

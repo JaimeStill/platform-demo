@@ -1,0 +1,438 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "cli": {
+    "packageManager": "yarn"
+  },
+  "newProjectRoot": "client",
+  "projects": {
+    "core": {
+      "projectType": "library",
+      "root": "client/core",
+      "sourceRoot": "client/core/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "client/core/tsconfig.lib.json",
+            "project": "client/core/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "client/core/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "client/core/tsconfig.lib.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "api-filtering": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "inlineTemplate": false,
+          "inlineStyle": false,
+          "style": "scss",
+          "skipTests": true
+        },
+        "@schematics/angular:class": {
+          "skipTests": true
+        },
+        "@schematics/angular:directive": {
+          "skipTests": true
+        },
+        "@schematics/angular:guard": {
+          "skipTests": true
+        },
+        "@schematics/angular:interceptor": {
+          "skipTests": true
+        },
+        "@schematics/angular:module": {
+          "skipTests": true
+        },
+        "@schematics/angular:pipe": {
+          "skipTests": true
+        },
+        "@schematics/angular:service": {
+          "skipTests": true
+        }
+      },
+      "root": "client/api-filtering",
+      "sourceRoot": "client/api-filtering/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/api-filtering",
+            "index": "client/api-filtering/src/index.html",
+            "main": "client/api-filtering/src/main.ts",
+            "polyfills": "client/api-filtering/src/polyfills.ts",
+            "tsConfig": "client/api-filtering/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "client/api-filtering/src/favicon.ico",
+              "client/api-filtering/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./assets",
+                "output": "client/api-filtering/src/assets"
+              }
+            ],
+            "styles": [
+              "theme/theme.scss"
+            ],
+            "scripts": [
+              "node_modules/hammerjs/hammer.js"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "client/api-filtering/src/environments/environment.ts",
+                  "with": "client/api-filtering/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "api-filtering:build",
+            "port": 3001
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "api-filtering:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "api-filtering:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "client/api-filtering//tsconfig.app.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "worker-service": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "inlineTemplate": false,
+          "inlineStyle": false,
+          "style": "scss",
+          "skipTests": true
+        },
+        "@schematics/angular:class": {
+          "skipTests": true
+        },
+        "@schematics/angular:directive": {
+          "skipTests": true
+        },
+        "@schematics/angular:guard": {
+          "skipTests": true
+        },
+        "@schematics/angular:interceptor": {
+          "skipTests": true
+        },
+        "@schematics/angular:module": {
+          "skipTests": true
+        },
+        "@schematics/angular:pipe": {
+          "skipTests": true
+        },
+        "@schematics/angular:service": {
+          "skipTests": true
+        }
+      },
+      "root": "client/worker-service",
+      "sourceRoot": "client/worker-service/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/worker-service",
+            "index": "client/worker-service/src/index.html",
+            "main": "client/worker-service/src/main.ts",
+            "polyfills": "client/worker-service/src/polyfills.ts",
+            "tsConfig": "client/worker-service/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "client/worker-service/src/favicon.ico",
+              "client/worker-service/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./assets",
+                "output": "client/worker-service/src/assets"
+              }
+            ],
+            "styles": [
+              "theme/theme.scss"
+            ],
+            "scripts": [
+              "node_modules/hammerjs/hammer.js"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "client/worker-service/src/environments/environment.ts",
+                  "with": "client/worker-service/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "worker-service:build",
+            "port": 3002
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "worker-service:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "worker-service:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "client/worker-service//tsconfig.app.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "recursive-interface": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "inlineTemplate": false,
+          "inlineStyle": false,
+          "style": "scss",
+          "skipTests": true
+        },
+        "@schematics/angular:class": {
+          "skipTests": true
+        },
+        "@schematics/angular:directive": {
+          "skipTests": true
+        },
+        "@schematics/angular:guard": {
+          "skipTests": true
+        },
+        "@schematics/angular:interceptor": {
+          "skipTests": true
+        },
+        "@schematics/angular:module": {
+          "skipTests": true
+        },
+        "@schematics/angular:pipe": {
+          "skipTests": true
+        },
+        "@schematics/angular:service": {
+          "skipTests": true
+        }
+      },
+      "root": "client/recursive-interface",
+      "sourceRoot": "client/recursive-interface/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/recursive-interface",
+            "index": "client/recursive-interface/src/index.html",
+            "main": "client/recursive-interface/src/main.ts",
+            "polyfills": "client/recursive-interface/src/polyfills.ts",
+            "tsConfig": "client/recursive-interface/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "client/recursive-interface/src/favicon.ico",
+              "client/recursive-interface/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./assets",
+                "output": "client/recursive-interface/src/assets"
+              }
+            ],
+            "styles": [
+              "theme/theme.scss"
+            ],
+            "scripts": [
+              "node_modules/hammerjs/hammer.js"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "client/recursive-interface/src/environments/environment.ts",
+                  "with": "client/recursive-interface/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "recursive-interface:build",
+            "port": 3003
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "recursive-interface:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "recursive-interface:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "client/recursive-interface//tsconfig.app.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "api": {
+      "projectType": "library",
+      "root": "client/api",
+      "sourceRoot": "client/api/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "client/api/tsconfig.lib.json",
+            "project": "client/api/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "client/api/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "client/api/tsconfig.lib.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    }},
+  "defaultProject": "core"
+}

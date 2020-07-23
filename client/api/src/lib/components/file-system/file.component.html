@@ -1,0 +1,29 @@
+<section class="background card elevated card-outline"
+         fxLayout="row"
+         fxLayoutAlign="start stretch"
+         [style.width.px]="420">
+  <section fxLayout="column"
+           fxLayoutAlign="start stretch"
+           fxFlex>
+    <p class="mat-subheading-2">{{file.name}}</p>
+    <section fxLayout="row"
+             fxLayoutAlign="space-between center"
+             class="mat-caption">
+      <p>{{file.length | bytes}}</p>
+      <p>{{file.creationTime | date:'dd MMM yyyy'}}</p>
+    </section>
+  </section>
+  <section fxLayout="column"
+           fxLayoutAlign="space-evenly stretch"
+           class="background stacked">
+    <button mat-icon-button
+            (click)="edit.emit(file)">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-icon-button
+            color="warn"
+            (click)="delete.emit(file)">
+      <mat-icon>delete_outline</mat-icon>
+    </button>
+  </section>
+</section>

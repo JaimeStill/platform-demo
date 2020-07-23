@@ -1,0 +1,27 @@
+<div class="mat-typography">
+  <h2 mat-dialog-title>Notification Bin</h2>
+  <mat-dialog-content>
+    <ng-template #loading>
+      <mat-progress-bar mode="indeterminate"
+                        color="accent"></mat-progress-bar>
+    </ng-template>
+    <section fxLayout="column"
+             fxLayoutAlign="start stretch"
+             class="container"
+             *ngIf="notify.notifications$ | async as notifications else loading">
+      <ng-container *ngIf="notifications.length > 0">
+        <notification-card *ngFor="let n of notifications"
+                           [notification]="n"
+                           [isRecycled]="true"
+                           (delete)="restore($event)"
+                           (remove)="remove($event)"></notification-card>
+      </ng-container>
+      <p class="mat-subheading-2"
+         *ngif="!(notifications.length > 0)">Recycle Bin is Empty</p>
+    </section>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button
+            mat-dialog-close>Close</button>
+  </mat-dialog-actions>
+</div>

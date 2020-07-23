@@ -1,0 +1,18 @@
+<section fxLayout="column"
+         fxLayoutAlign="start stretch"
+         class="container">
+  <section fxLayout="row"
+           fxLayoutAlign="start center">
+    <p *ngIf="label"
+       class="mat-body-strong"
+       fxFlex>{{label}}</p>
+    <p class="mat-body-strong">{{alert.trigger | date:'dd MMM yyyy HH:mm'}}</p>
+  </section>
+  <section fxLayout="row"
+           fxLayoutAlign="start center">
+    <p fxFlex>Recurring: {{alert.recurring ? 'Yes' : 'No'}}</p>
+    <p *ngIf="alert.recurring">{{alert.years}}:{{alert.months}}:{{alert.days}}:{{alert.hours}}:{{alert.minutes}}</p>
+  </section>
+  <p *ngIf="alert.url">{{alert.url}}</p>
+  <p>{{alert.message}}</p>
+</section>

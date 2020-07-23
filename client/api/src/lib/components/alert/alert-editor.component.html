@@ -1,0 +1,84 @@
+<section fxLayout="column"
+         fxLayoutAlign="start stretch">
+  <datetime-picker label="Trigger"
+                   [date]="alert.trigger"
+                   (change)="setTrigger($event)"></datetime-picker>
+  <mat-form-field>
+    <mat-label>URL</mat-label>
+    <input matInput
+           [(ngModel)]="alert.url">
+    <mat-hint>Example: edit-alert/1</mat-hint>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Message</mat-label>
+    <textarea matInput
+              mat-autosize
+              [(ngModel)]="alert.message"
+              [matAutosizeMinRows]="4"
+              [matAutosizeMaxRows]="4"></textarea>
+  </mat-form-field>
+  <mat-slide-toggle [(ngModel)]="alert.recurring"
+                    (change)="toggleRecurring()">Recurring?</mat-slide-toggle>
+  <ng-container *ngIf="alert.recurring">
+    <section fxLayout="row"
+             fxLayoutAlign="start center">
+      <p>Years</p>
+      <mat-slider fxFlex
+                  [tickInterval]="'auto'"
+                  [value]="alert.years"
+                  [min]="0"
+                  [max]="5"
+                  [step]="1"
+                  (input)="setYears($event)"></mat-slider>
+      <p>{{alert.years}}</p>
+    </section>
+    <section fxLayout="row"
+             fxLayoutAlign="start center">
+      <p>Months</p>
+      <mat-slider fxFlex
+                  [tickInterval]="'auto'"
+                  [value]="alert.months"
+                  [min]="0"
+                  [max]="12"
+                  [step]="1"
+                  (input)="setMonths($event)"></mat-slider>
+      <p>{{alert.months}}</p>
+    </section>
+    <section fxLayout="row"
+             fxLayoutAlign="start center">
+      <p>Days</p>
+      <mat-slider fxFlex
+                  [tickInterval]="'auto'"
+                  [value]="alert.days"
+                  [min]="0"
+                  [max]="31"
+                  [step]="1"
+                  (input)="setDays($event)"></mat-slider>
+      <p>{{alert.days}}</p>
+    </section>
+    <section fxLayout="row"
+             fxLayoutAlign="start center">
+      <p>Hours</p>
+      <mat-slider fxFlex
+                  [tickInterval]="'auto'"
+                  [value]="alert.hours"
+                  [min]="0"
+                  [max]="24"
+                  [step]="1"
+                  (input)="setHours($event)"></mat-slider>
+      <p>{{alert.hours}}</p>
+    </section>
+    <section fxLayout="row"
+             fxLayoutAlign="start center">
+      <p>Minutes</p>
+      <mat-slider fxFlex
+                  [tickInterval]="'auto'"
+                  [value]="alert.minutes"
+                  [min]="0"
+                  [max]="59"
+                  [step]="1"
+                  (input)="setMinutes($event)"></mat-slider>
+      <p>{{alert.minutes}}</p>
+    </section>
+  </ng-container>
+</section>

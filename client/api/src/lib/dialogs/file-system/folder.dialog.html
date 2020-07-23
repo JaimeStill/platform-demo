@@ -1,0 +1,43 @@
+<div class="mat-typography">
+  <h2 mat-dialog-title>
+    <span *ngIf="folder.id > 0">Edit Folder</span>
+    <span *ngIf="!(folder.id > 0)">Add Folder</span>
+  </h2>
+  <mat-dialog-content>
+    <section fxLayout="column"
+             fxLayoutAlign="start stretch"
+             class="container">
+      <mat-form-field>
+        <mat-label>Folder</mat-label>
+        <input matInput
+               [(ngModel)]="folder.name"
+               #folderInput />
+        <mat-hint *ngIf="validName">Folder name is available</mat-hint>
+        <mat-hint *ngIf="!(validName)"
+                  class="error">Folder name is already taken</mat-hint>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Color</mat-label>
+        <input matInput
+               [(ngModel)]="folder.color" />
+      </mat-form-field>
+      <section class="background card elevated container card-outline"
+               [style.border-color]="folder.color">
+        <p class="mat-subheading-2"
+           *ngIf="folder.name"
+           [style.color]="folder.color">{{folder.name}}</p>
+        <p class="mat-subheading-2"
+           *ngIf="!(folder.name)"
+           [style.color]="'#555555'">Preview</p>
+      </section>
+    </section>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button
+            (click)="saveFolder()"
+            [disabled]="!(validName)">Save</button>
+    <button mat-button
+            mat-dialog-close
+            color="warn">Cancel</button>
+  </mat-dialog-actions>
+</div>

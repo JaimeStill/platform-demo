@@ -1,0 +1,42 @@
+<section fxLayout="column"
+         fxLayoutAlign="start stretch"
+         class="container">
+  <mat-form-field>
+    <mat-label>{{label}}</mat-label>
+    <input matInput
+           [matDatepicker]="picker"
+           [value]="_date"
+           (dateChange)="dateChanged($event)">
+    <mat-hint *ngIf="hint">{{hint}}</mat-hint>
+    <mat-datepicker-toggle matSuffix
+                           [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+  <section fxFlexAlign="center">
+    <p class="mat-body-strong">{{hours | number:'2.0'}}:{{minutes | number:'2.0'}}</p>
+  </section>
+  <section fxLayout="row"
+           fxLayoutAlign="start center">
+    <p>Hours</p>
+    <mat-slider fxFlex
+                [max]="hourMax"
+                [min]="hourMin"
+                [step]="hourStep"
+                [thumbLabel]="hourThumb"
+                [tickInterval]="hourInterval"
+                [value]="hours"
+                (input)="setHours($event)"></mat-slider>
+  </section>
+  <section fxLayout="row"
+           fxLayoutAlign="start center">
+    <p>Mins</p>
+    <mat-slider fxFlex
+                [max]="minuteMax"
+                [min]="minuteMin"
+                [step]="minuteStep"
+                [thumbLabel]="minuteThumb"
+                [tickInterval]="minuteInterval"
+                [value]="minutes"
+                (input)="setMinutes($event)"></mat-slider>
+  </section>
+</section>

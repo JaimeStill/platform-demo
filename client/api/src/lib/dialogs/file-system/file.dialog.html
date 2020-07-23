@@ -1,0 +1,29 @@
+<div class="mat-typography">
+  <h2 mat-dialog-title>
+    <span *ngIf="file.id > 0">Edit File</span>
+    <span *ngIf="!(file.id > 0)">Add File</span>
+  </h2>
+  <mat-dialog-content>
+    <section fxLayout="column"
+             fxLayoutAlign="start stretch"
+             class="container">
+      <mat-form-field>
+        <mat-label>File</mat-label>
+        <input matInput
+               [(ngModel)]="file.name"
+               #fileInput />
+        <mat-hint *ngIf="validName">File name is available</mat-hint>
+        <mat-hint *ngIf="!(validName)"
+                  class="error">File name is already taken</mat-hint>
+      </mat-form-field>
+    </section>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button
+            (click)="saveFile()"
+            [disabled]="!(validName)">Save</button>
+    <button mat-button
+            mat-dialog-close
+            color="warn">Cancel</button>
+  </mat-dialog-actions>
+</div>

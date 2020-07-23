@@ -1,0 +1,30 @@
+<mat-toolbar color="primary">
+  <span fxFlex>Basic File Sytem Prototype</span>
+  <button mat-icon-button
+          (click)="themer.toggleTheme()">
+    <mat-icon [color]="themer.isLight ? 'accent' : 'default'">
+      {{themer.isLight ? 'brightness_5' : 'brightness_3'}}
+    </mat-icon>
+  </button>
+</mat-toolbar>
+<mat-toolbar class="app-toolbar">
+  <button mat-stroked-button
+          (click)="addFolder()">Add Folder</button>
+</mat-toolbar>
+<ng-template #loading>
+  <mat-progress-bar mode="indeterminate"
+                    color="accent"></mat-progress-bar>
+</ng-template>
+<ng-container *ngIf="fileSystem.folders$ | async as folders else loading">
+  <section fxLayout="column"
+           fxLayoutAlign="start stretch"
+           class="container"
+           *ngIf="folders.length > 0">
+    <folder *ngFor="let folder of folders"
+            [folder]="folder"
+            (edit)="editFolder($event)"
+            (delete)="deleteFolder($event)"></folder>
+  </section>
+  <p *ngIf="!(folders.length > 0)"
+     class="mat-subheading-2">File System is Empty</p>
+</ng-container>

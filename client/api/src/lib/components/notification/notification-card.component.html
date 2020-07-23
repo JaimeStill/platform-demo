@@ -1,0 +1,45 @@
+<section fxLayout="row"
+         fxLayoutAlign="start stretch"
+         class="background card elevated"
+         [ngClass]="notification.isAlert ? 'card-outline-warn' : 'card-outline-primary'">
+  <section fxLayout="column"
+           fxLayoutAlign="start stretch"
+           class="container"
+           fxFlex>
+    <p fxFlex>{{notification.message}}</p>
+    <p>{{notification.pushDate | date:'HH:mm - dd MMM yyyy'}}</p>
+  </section>
+  <section fxLayout="column"
+           fxLayoutAlign="space-evenly center"
+           class="background stacked">
+    <button mat-icon-button
+            *ngIf="notification.url && !(isRecycled)"
+            [matTooltip]="notification.url"
+            (click)="view.emit(notification)">
+      <mat-icon>open_in_browser</mat-icon>
+    </button>
+    <button mat-icon-button
+            (click)="read.emit(notification)"
+            *ngIf="!(isRecycled)">
+      <mat-icon matTooltip="Mark Unread"
+                *ngIf="notification.isRead">drafts</mat-icon>
+      <mat-icon matTooltip="Mark Read"
+                *ngIf="!(notification.isRead)">mail</mat-icon>
+    </button>
+    <button mat-icon-button
+            (click)="delete.emit(notification)">
+      <mat-icon *ngIf="!(isRecycled)"
+                matTooltip="Delete"
+                color="warn">delete_outline</mat-icon>
+      <mat-icon matTooltip="Restore"
+                *ngIf="isRecycled">restore_from_trash</mat-icon>
+    </button>
+    <button mat-icon-button
+            matTooltip="Permanently Delete"
+            color="warn"
+            (click)="remove.emit(notification)"
+            *ngIf="isRecycled">
+      <mat-icon>delete_forever</mat-icon>
+    </button>
+  </section>
+</section>

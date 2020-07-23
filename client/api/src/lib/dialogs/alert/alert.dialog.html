@@ -1,0 +1,20 @@
+<div class="mat-typography">
+  <h2 mat-dialog-title>
+    <span *ngIf="alert.id > 0">Edit Alert</span>
+    <span *ngIf="!(alert.id > 0)">Add Alert</span>
+  </h2>
+  <mat-dialog-content>
+    <section fxLayout="column"
+             fxLayoutAlign="start stretch"
+             class="container">
+      <alert-editor [alert]="alert"></alert-editor>
+    </section>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button
+            (click)="saveAlert()">Save</button>
+    <button mat-button
+            color="warn"
+            mat-dialog-close>Cancel</button>
+  </mat-dialog-actions>
+</div>

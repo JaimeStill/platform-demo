@@ -1,0 +1,78 @@
+<section fxLayout="column"
+         fxLayoutAlign="start stretch">
+  <section fxLayout="row"
+           fxLayoutAlign="start center"
+           class="card-outline elevated"
+           [style.border-color]="folder?.color"
+           [style.width.px]="420"
+           [style.margin-bottom.px]="8">
+    <p class="mat-subheading-2"
+       fxFlex
+       [style.color]="folder?.color">{{folder?.name}}</p>
+    <mat-icon *ngIf="!(hovered)"
+              (mouseenter)="toggleHovered()">menu_open</mat-icon>
+    <section *ngIf="hovered"
+             fxLayout="row"
+             fxLayoutAlign="end center"
+             (mouseleave)="toggleHovered()">
+      <button mat-icon-button
+              matTooltip="Delete"
+              color="warn"
+              (click)="delete.emit(folder)">
+        <mat-icon>delete_outline</mat-icon>
+      </button>
+      <button mat-icon-button
+              matTooltip="Edit"
+              (click)="edit.emit(folder)">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button
+              matTooltip="New Folder"
+              (click)="addFolder()">
+        <mat-icon>create_new_folder</mat-icon>
+      </button>
+      <button mat-icon-button
+              matTooltip="New File"
+              (click)="addFile()">
+        <mat-icon>note_add</mat-icon>
+      </button>
+    </section>
+    <button mat-icon-button
+            (click)="toggleExpanded()">
+      <mat-icon *ngIf="expanded"
+                matTooltip="Collapse">keyboard_arrow_down</mat-icon>
+      <mat-icon *ngIf="!(expanded)"
+                matTooltip="Expand">keyboard_arrow_right</mat-icon>
+    </button>
+  </section>
+  <ng-container *ngIf="expanded">
+    <ng-template #loading>
+      <mat-progress-bar mode="indeterminate" color="accent"></mat-progress-bar>
+    </ng-template>
+    <ng-container *ngIf="fileSystem.folders$ | async as folders">
+      <ng-container *ngIf="fileSystem.files$ | async as files">
+        <section fxLayout="column"
+                 fxLayoutAlign="start stretch"
+                 *ngIf="folders?.length > 0">
+          <folder *ngFor="let f of folders"
+                  [folder]="f"
+                  [style.margin.px]="4"
+                  [style.margin-left.px]="8"
+                  (edit)="editFolder($event)"
+                  (delete)="deleteFolder($event)"></folder>
+        </section>
+        <section fxLayout="column"
+                 fxLayoutAlign="start stretch"
+                 *ngIf="files?.length > 0">
+          <file *ngFor="let f of files"
+                [file]="f"
+                [style.margin.px]="4"
+                [style.margin-left.px]="8"
+                (edit)="editFile($event)"
+                (delete)="deleteFile($event)"></file>
+        </section>
+        <p *ngIf="!(files.length > 0) && !(folders.length > 0)">Folder is Empty</p>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</section>

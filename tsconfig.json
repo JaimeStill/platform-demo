@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "plugins": [
+      { "name": "@angular/language-service" }
+    ]
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "./client/core/tsconfig.lib.json"
+    },
+    {
+      "path": "./client/api-filtering/tsconfig.app.json"
+    },
+    {
+      "path": "./client/worker-service/tsconfig.app.json"
+    },
+    {
+      "path": "./client/recursive-interface/tsconfig.app.json"
+    },
+    {
+      "path": "./client/api/tsconfig.lib.json"
+    }
+]
+}

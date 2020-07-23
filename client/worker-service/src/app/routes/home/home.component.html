@@ -1,0 +1,38 @@
+<ng-template #loading>
+  <mat-progress-bar mode="indeterminate"
+                    color="accent"></mat-progress-bar>
+</ng-template>
+<ng-container *ngIf="alertSource.connect() | async as alerts else loading">
+  <mat-toolbar>
+    <button mat-stroked-button
+            color="primary"
+            (click)="addAlert()">
+      Add Alert
+    </button>
+  </mat-toolbar>
+  <section fxLayout="column"
+           fxLayoutAlign="start stretch"
+           class="container">
+    <searchbar label="Search Alerts"
+               [minimum]="1"
+               (search)="alertSource.onSearch($event)"
+               (clear)="alertSource.clearSearch()"></searchbar>
+    <mat-paginator [length]="data?.totalCount"
+                   [pageSize]="data?.pageSize"
+                   [pageSizeOptions]="alertSource.pageSizeOptions"
+                   [pageIndex]="data?.page - 1"
+                   (page)="alertSource.onPage($event)"></mat-paginator>
+    <section *ngIf="alerts.length > 0"
+             fxLayout="row | wrap"
+             fxLayoutAlign="start stretch"
+             class="background stacked">
+      <alert-card *ngFor="let a of alerts"
+                  [alert]="a"
+                  [editable]="true"
+                  (edit)="editAlert($event)"
+                  (remove)="removeAlert($event)"></alert-card>
+    </section>
+    <p class="mat-subheading-2"
+       *ngIf="!(alerts.length > 0)">No Alerts Available</p>
+  </section>
+</ng-container>

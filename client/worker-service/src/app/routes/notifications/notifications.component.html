@@ -1,0 +1,47 @@
+<ng-template #loading>
+  <mat-progress-bar mode="indeterminate"
+                    color="accent"></mat-progress-bar>
+</ng-template>
+<ng-container *ngIf="notify.unread$ | async as unread else loading">
+  <ng-container *ngIf="notify.read$ | async as read else loading">
+    <mat-toolbar>
+      <span fxFlex>Notifications</span>
+      <button mat-stroked-button
+              color="warn"
+              (click)="viewNotificationBin()">Recycle Bin</button>
+    </mat-toolbar>
+    <section fxLayout="row"
+             fxLayoutAlign="start stretch">
+      <section fxLayout="column"
+               fxLayoutAlign="start stretch"
+               class="container"
+               fxFlex>
+        <p class="mat-title">Unread</p>
+        <ng-container *ngIf="unread.length > 0">
+          <notification-card *ngFor="let n of unread"
+                             [notification]="n"
+                             (view)="viewNotification($event)"
+                             (read)="readNotification($event)"
+                             (delete)="deleteNotification($event)"></notification-card>
+        </ng-container>
+        <p class="mat-subheading-2"
+           *ngIf="!(unread.length > 0)">No Unread Notifications</p>
+      </section>
+      <section fxLayout="column"
+               fxLayoutAlign="start stretch"
+               class="container"
+               fxFlex>
+        <p class="mat-title">Read</p>
+        <ng-container *ngIf="read.length > 0">
+          <notification-card *ngFor="let n of read"
+                             [notification]="n"
+                             (view)="viewNotification($event)"
+                             (read)="readNotification($event)"
+                             (delete)="deleteNotification($event)"></notification-card>
+        </ng-container>
+        <p class="mat-subheading-2"
+           *ngIf="!(read.length > 0)">No Read Notifications</p>
+      </section>
+    </section>
+  </ng-container>
+</ng-container>

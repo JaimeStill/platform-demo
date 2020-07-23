@@ -1,0 +1,22 @@
+<section fxLayout="row"
+         fxLayoutAlign="start stretch"
+         [style.width.px]="size"
+         class="background card elevated">
+  <alert-details fxFlex
+                 [alert]="alert"
+                 [label]="alert.id"></alert-details>
+  <section *ngIf="editable"
+           fxLayout="column"
+           fxLayoutAlign="space-evenly center"
+           class="background stacked container">
+    <button mat-icon-button
+            (click)="edit.emit(alert)">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-icon-button
+            color="warn"
+            (click)="remove.emit(alert)">
+      <mat-icon>delete_outline</mat-icon>
+    </button>
+  </section>
+</section>
