@@ -14,6 +14,7 @@
 * [Worker Service](#worker-service)
   * [Worker Service Infrastructure](#worker-service-infrastructure)
   * [Worker Service Implementation](#worker-service-implementation)
+* [Entity Framework Change Auditing](#entity-framework-change-auditing)
 
 This demonstration is built into an [Angular Workspace](https://angular.io/guide/workspace-config) and is similar to the setup generated in my [angular-workspaces](https://github.com/JaimeStill/angular-workspaces/blob/master/README.md) repository.
 
@@ -181,8 +182,65 @@ By default, `FolderComponent.expanded = false`. Its children aren't loaded until
 ## Worker Service
 [Back to Top](#platform-demo)
 
+This demonstration actually introduces several coordinated features:
+
+* App Notifications
+* Alerts which generate Notifications
+
+There are two technologies that directly enable these features:
+
+* [SignalR](https://docs.microsoft.com/en-us/aspnet/core/signalr/introduction?view=aspnetcore-3.1)
+* [Hosted Services](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services?view=aspnetcore-3.1&tabs=visual-studio)
+
 ### Worker Service Infrastructure
 [Back to Top](#platform-demo)
 
+> In this section, I'll highlight all of the standard parts of the codebase that you should already be familiar with. In the next section, I'll highlight everything that drives the non-standard functionality of these features.
+
+* [Notification.cs](https://github.com/JaimeStill/platform-demo/blob/master/server/PlatformDemo.Data/Entities/Notification.cs) and [Alert.cs](https://github.com/JaimeStill/platform-demo/blob/master/server/PlatformDemo.Data/Entities/Notification.cs) - Entity Framework classes
+* [NotificationExtensions.cs](https://github.com/JaimeStill/platform-demo/blob/master/server/PlatformDemo.Data/Extensions/NotificationExtensions.cs) and [AlertExtensions.cs](https://github.com/JaimeStill/platform-demo/blob/master/server/PlatformDemo.Data/Extensions/AlertExtensions.cs) - Extension method classes that define the business logic for working with Notifications and Alerts.
+* [NotificationController.cs](https://github.com/JaimeStill/platform-demo/blob/master/server/PlatformDemo.Web/Controllers/NotificationController.cs) and [AlertController.cs](https://github.com/JaimeStill/platform-demo/blob/master/server/PlatformDemo.Web/Controllers/AlertController.cs) - Web API controllers.
+* [notification.ts](https://github.com/JaimeStill/platform-demo/blob/master/client/api/src/lib/models/notification.ts) and [alert.ts](https://github.com/JaimeStill/platform-demo/blob/master/client/api/src/lib/models/alert.ts) - TypeScript interfaces that map to their corresponding Entity Framework classes.
+* [notification.service.ts](https://github.com/JaimeStill/platform-demo/blob/master/client/api/src/lib/services/notification.service.ts), [alert.service.ts](https://github.com/JaimeStill/platform-demo/blob/master/client/api/src/lib/services/alert.service.ts), and [alert.source.ts](https://github.com/JaimeStill/platform-demo/blob/master/client/api/src/lib/services/sources/alert.source.ts) - Angular services that map to API endpoint functionality.
+* [notification-bin.dialog.ts](https://github.com/JaimeStill/platform-demo/blob/master/client/api/src/lib/dialogs/notification/notification-bin.dialog.ts) and [notification-bin.dialog.html](https://github.com/JaimeStill/platform-demo/blob/master/client/api/src/lib/dialogs/notification/notification-bin.dialog.html) - Dialog for managing notifications flagged as deleted.
+* [alert.dialog.ts](https://github.com/JaimeStill/platform-demo/blob/master/client/api/src/lib/dialogs/alert/alert.dialog.ts) and [alert.dialog.html](https://github.com/JaimeStill/platform-demo/blob/master/client/api/src/lib/dialogs/alert/alert.dialog.html) - Dialog for creating new / managing existing alerts.
+* [notification-card.component.ts](https://github.com/JaimeStill/platform-demo/blob/master/client/api/src/lib/components/notification/notification-card.component.ts) and [notification-card.component.html](https://github.com/JaimeStill/platform-demo/blob/master/client/api/src/lib/components/notification/notification-card.component.html) - Notification card component.
+* [alert-editor.component.ts](https://github.com/JaimeStill/platform-demo/blob/master/client/api/src/lib/components/alert/alert-editor.component.ts) and [alert-editor.component.html](https://github.com/JaimeStill/platform-demo/blob/master/client/api/src/lib/components/alert/alert-editor.component.html) - Component for managing the details of an alert.
+* [alert-details.component.ts](https://github.com/JaimeStill/platform-demo/blob/master/client/api/src/lib/components/alert/alert-details.component.ts) and [alert-details.component.html](https://github.com/JaimeStill/platform-demo/blob/master/client/api/src/lib/components/alert/alert-details.component.html) - Component for rendering the details of an alert.
+* [alert-card.component.ts](https://github.com/JaimeStill/platform-demo/blob/master/client/api/src/lib/components/alert/alert-card.component.ts) and [alert-card.component.html](https://github.com/JaimeStill/platform-demo/blob/master/client/api/src/lib/components/alert/alert-card.component.html) - Alert card component.
+* [notifications.component.ts](https://github.com/JaimeStill/platform-demo/blob/master/client/worker-service/src/app/routes/notifications/notifications.component.ts) and [notifications.component.html](https://github.com/JaimeStill/platform-demo/blob/master/client/worker-service/src/app/routes/notifications/notifications.component.html) - Route for managing notifications.
+* [home.component.ts](https://github.com/JaimeStill/platform-demo/blob/master/client/worker-service/src/app/routes/home/home.component.ts) and [home.component.html](https://github.com/JaimeStill/platform-demo/blob/master/client/worker-service/src/app/routes/home/home.component.html) - Route for managing alerts.
+
 ### Worker Service Implementation
 [Back to Top](#platform-demo)
+
+* [SocketHub.cs](https://github.com/JaimeStill/platform-demo/blob/master/server/PlatformDemo.Web/Hubs/SocketHub.cs) - SignalR Hub necessary for broadcasting notifications
+* [NotificationWorker.cs](https://github.com/JaimeStill/platform-demo/blob/master/server/PlatformDemo.Web/Workers/NotificationWorker.cs) - `IHostedService` that runs as a service in parallel with the .NET Core web app.
+  * Notice that `AppDbContext` cannot be injected directly. It must be extracted from the injected `IServiceProvider` instance.
+  * An `IHubContext<SocketHub>` must be injected in order to use SignalR to trigger the `receiveAlertNotification` event for connected clients via the `NotifyClients` method.
+  * `StartAsync` runs whenever the IIS site starts
+  * `TriggerAlerts` runs whenever the `Timer` ticks (every 15 seconds in this case).
+  * `StopAsync` runs whenever the IIS site is stopped
+* [Program.cs](https://github.com/JaimeStill/platform-demo/blob/master/server/PlatformDemo.Web/Program.cs#L22) - Modified to configure and start the `NotificationWorker` hosted service.
+* [Startup.cs](https://github.com/JaimeStill/platform-demo/blob/master/server/PlatformDemo.Web/Startup.cs#L94) - Map the `SocketHub` to the `/core-socket` endpoint.
+* [socket.service.ts](https://github.com/JaimeStill/platform-demo/blob/master/client/api/src/lib/services/sockets/socket.service.ts) - Angular Service that manages a SignalR web socket connection, registers web socket events, and exposes a `triggerNotification` function to broadcast notifications to other connected clients.
+  * The `connected$`, `error$`, `notify$`, and `alertNotify$` streams are used to keep track of the state of the web socket, as well as track whenever new notifications are available.
+* [app.component.ts](https://github.com/JaimeStill/platform-demo/blob/master/client/worker-service/src/app/app.component.ts#L32) - At the global **AppComponent** level, whenever new notifications are received, the notification count is updated. This is used by the notification link to indicate how many unread notifications there are.
+* [app.component.html](https://github.com/JaimeStill/platform-demo/blob/master/client/worker-service/src/app/app.component.html#L11) - This section shows the notification link, and how it uses the `notifyCount` property to indicate the amount of unread notifications there currently are.
+* [home.component.ts](https://github.com/JaimeStill/platform-demo/blob/master/client/worker-service/src/app/routes/home/home.component.ts#L42) - Whenever an alert is triggered, the new alert notification is received by SignalR, and refreshes the collection of alerts.
+
+## Entity Framework Change Auditing
+
+This is more of a transient feature that has been developed into the app platform. The whole of this feature can be found in the following places:
+
+* [ChangeState.cs](https://github.com/JaimeStill/platform-demo/blob/master/server/PlatformDemo.Data/ChangeState.cs) - For a given instance of `SaveChanges`, this class tracks all of the `EntityEntry` objects from the `ChangeTracker` based on their state: `Added`, `Modified`, or `Deleted`.
+* [Audit.cs](https://github.com/JaimeStill/platform-demo/blob/master/server/PlatformDemo.Data/Entities/Audit.cs) - Entity Framework class that stores the details of an audit record to the database.
+* [AppDbContext](https://github.com/JaimeStill/platform-demo/blob/master/server/PlatformDemo.Data/AppDbContext.cs#L50) - Beginning with `override SaveChanges` injects the audit process into the Entity Framework workflow.
+  * `GetChangeState` populates and returns an instance of `ChangeState`
+  * `GetEntityEntries` returns a `List<EntityEntry>` from the `ChangeTracker` of entries that are in the provided `EntityState`.
+  * `CreateAudit` creates `Audit` records for all of the `EntityEntry` objects in a provided `ChangeState` object.
+  * `GenerateAudit` serializes the state of an entity into JSON, generates an `Audit` record for the entry, then executes the specified `generator` action.
+    * Think of `Action<T>` as a void callback function that receives an object of `T` as an argument whenever it is invoked.
+
+
+`Audit` data can be accessed via the [AuditController](https://github.com/JaimeStill/platform-demo/blob/master/server/PlatformDemo.Web/Controllers/AuditController.cs), which has its logic defined in [AuditExtensions](https://github.com/JaimeStill/platform-demo/blob/master/server/PlatformDemo.Data/Extensions/AuditExtensions.cs).
